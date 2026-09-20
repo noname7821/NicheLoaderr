@@ -1,0 +1,65 @@
+name: Build IPA
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Select Xcode
+        run: |
+          sudo xcode-select -s /Applications/Xcode_16.4.app/Contents/Developer || sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+          xcodebuild -version
+
+      - name: Fetch server deps
+        run: |
+          mkdir -p deps
+          curl -L -o deps/server.crt https://backloop.dev/backloop.dev-cert.crt || true
+          curl -L -o deps/server.key1 https://backloop.dev/backloop.dev-key.part1.pem || true
+          curl -L -o deps/server.key2 https://backloop.dev/backloop.dev-key.part2.pem || true
+          cat deps/server.key1 deps/server.key2 > deps/server.pem 2>/dev/null || true
+          rm -f deps/server.key1 deps/server.key2
+          echo "*.backloop.dev" > deps/commonName.txt
+          ls -la deps || true
+
+      - name: Build with xcodebuild
+        run: |
+          TMP="$RUNNER_TEMP/Ksign"
+          STAGE="$TMP/stage"
+          APP="$TMP/Build/Products/Release-iphoneos"
+          xcodebuild \
+            -project Ksign.xcodeproj \
+            -scheme Ksign \
+            -configuration Release \
+            -arch arm64 \
+            -sdk iphoneos \
+            -derivedDataPath "$TMP" \
+            -skipPackagePluginValidation \
+            CODE_SIGNING_ALLOWED=NO \
+            ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES=NO
+          rm -rf Payload "$STAGE"
+          mkdir -p "$STAGE/Payload"
+          mv "$APP/Ksign.app" "$STAGE/Payload/NicheLoader.app"
+          chmod -R 0755 "$STAGE/Payload/NicheLoader.app"
+          codesign --force --sign - --timestamp=none "$STAGE/Payload/NicheLoader.app" || true
+          cp deps/* "$STAGE/Payload/NicheLoader.app/" || true
+          rm -rf "$STAGE/Payload/NicheLoader.app/_CodeSignature"
+          ln -sfn "$STAGE/Payload" Payload
+          mkdir -p packages
+          rm -f packages/NicheLoader.ipa
+          cd "$STAGE" && zip -r9 "$GITHUB_WORKSPACE/packages/NicheLoader.ipa" Payload
+          ls -lh "$GITHUB_WORKSPACE/packages/"
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: NicheLoader-ipa
+          path: packages/NicheLoader.ipa
