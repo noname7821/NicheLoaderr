@@ -1,0 +1,86 @@
+name: Release IPA
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-15
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Show Xcode versions
+        run: |
+          ls /Applications | grep -i xcode || true
+          xcodebuild -version || true
+          sudo xcode-select -s /Applications/Xcode.app/Contents/Developer || true
+          xcodebuild -version
+
+      - name: Resolve packages
+        run: |
+          xcodebuild -resolvePackageDependencies -project Ksign.xcodeproj -scheme Ksign || true
+
+      - name: Fetch server deps
+        run: |
+          mkdir -p deps
+          curl -L -o deps/server.crt https://backloop.dev/backloop.dev-cert.crt || true
+          curl -L -o deps/server.key1 https://backloop.dev/backloop.dev-key.part1.pem || true
+          curl -L -o deps/server.key2 https://backloop.dev/backloop.dev-key.part2.pem || true
+          cat deps/server.key1 deps/server.key2 > deps/server.pem 2>/dev/null || true
+          rm -f deps/server.key1 deps/server.key2
+          echo "*.backloop.dev" > deps/commonName.txt
+          ls -la deps || true
+
+      - name: Build app
+        run: |
+          set -x
+          TMP="$RUNNER_TEMP/Ksign"
+          echo "DerivedData: $TMP"
+          xcodebuild \
+            -project Ksign.xcodeproj \
+            -scheme Ksign \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath "$TMP" \
+            -skipPackagePluginValidation \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGN_IDENTITY="" \
+            DEVELOPMENT_TEAM="" \
+            ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES=NO
+          ls -la "$TMP/Build/Products/Release-iphoneos/" || true
+
+      - name: Package IPA
+        run: |
+          set -x
+          TMP="$RUNNER_TEMP/Ksign"
+          STAGE="$TMP/stage"
+          APP="$TMP/Build/Products/Release-iphoneos"
+          rm -rf Payload "$STAGE"
+          mkdir -p "$STAGE/Payload"
+          ls -la "$APP/"
+          mv "$APP/Ksign.app" "$STAGE/Payload/NicheLoader.app"
+          chmod -R 0755 "$STAGE/Payload/NicheLoader.app"
+          codesign --force --sign - --timestamp=none "$STAGE/Payload/NicheLoader.app" || true
+          cp deps/* "$STAGE/Payload/NicheLoader.app/" || true
+          rm -rf "$STAGE/Payload/NicheLoader.app/_CodeSignature"
+          mkdir -p packages
+          rm -f packages/NicheLoader.ipa
+          cd "$STAGE" && zip -r9 "$GITHUB_WORKSPACE/packages/NicheLoader.ipa" Payload
+          ls -lh "$GITHUB_WORKSPACE/packages/"
+
+      - name: Create GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${GITHUB_REF_NAME:-v1.0.1}"
+          gh release create "$TAG" packages/NicheLoader.ipa \
+            --title "NicheLoader ${TAG}" \
+            --notes "NicheLoader ${TAG} - on-device iOS signer by mintoo. Download NicheLoader.ipa and install with your favourite installer."

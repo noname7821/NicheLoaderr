@@ -15,7 +15,7 @@
 			<string>Owner</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>nya.asami.ipa</string>
+				<string>com.filmeacc.nicheloader.ipa</string>
 			</array>
 		</dict>
 		<dict>
@@ -29,21 +29,21 @@
 			<string>Alternate</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>nya.asami.tipa</string>
+				<string>com.filmeacc.nicheloader.tipa</string>
 			</array>
 		</dict>
 		<dict>
 			<key>CFBundleTypeIconFile</key>
 			<string>ksign_extension</string>
 			<key>CFBundleTypeName</key>
-			<string>Ksign Certificate Package</string>
+			<string>NicheLoader Certificate Package</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>LSHandlerRank</key>
 			<string>Owner</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>nya.asami.ksign.cert</string>
+				<string>com.filmeacc.nicheloader.cert</string>
 			</array>
 		</dict>
 	</array>
@@ -110,10 +110,10 @@
 			<key>CFBundleURLIconFile</key>
 			<string>ksign_extension</string>
 			<key>CFBundleURLName</key>
-			<string>nya.asami.ksign</string>
+			<string>com.filmeacc.nicheloader</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>ksign</string>
+				<string>nicheloader</string>
 			</array>
 		</dict>
 	</array>
@@ -144,7 +144,7 @@
 				<string>IPA</string>
 			</dict>
 			<key>UTTypeIdentifier</key>
-			<string>nya.asami.ipa</string>
+			<string>com.filmeacc.nicheloader.ipa</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>
@@ -176,7 +176,7 @@
 				<string>TIPA</string>
 			</dict>
 			<key>UTTypeIdentifier</key>
-			<string>nya.asami.tipa</string>
+			<string>com.filmeacc.nicheloader.tipa</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>
@@ -196,16 +196,16 @@
 				<string>public.content</string>
 			</array>
 			<key>UTTypeDescription</key>
-			<string>Ksign Certificate Package</string>
+			<string>NicheLoader Certificate Package</string>
 			<key>UTTypeIconFile</key>
 			<string>ksign_extension</string>
 			<key>UTTypeIcons</key>
 			<dict>
 				<key>UTTypeIconText</key>
-				<string>KSIGN</string>
+				<string>NICHELOADER</string>
 			</dict>
 			<key>UTTypeIdentifier</key>
-			<string>nya.asami.ksign.cert</string>
+			<string>com.filmeacc.nicheloader.cert</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>

@@ -25,7 +25,7 @@ struct AppearanceView: View {
 		.localized("Big Description")
 	]
 	
-	@AppStorage("Feather.accentColor") private var _selectedAccentColor: Int = 0
+	@AppStorage("Feather.accentColor") private var _selectedAccentColor: Int = 7
 	@StateObject private var accentColorManager = AccentColorManager.shared
 	
     @AppStorage("com.apple.SwiftUI.IgnoreSolariumLinkedOnCheck")

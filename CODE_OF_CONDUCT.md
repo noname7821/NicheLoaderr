@@ -1,13 +1,13 @@
 # Code of Conduct
 
-Welcome to Ksign's Code of Conduct! This document outlines essential guidelines and important information regarding interacting with the repository.
+Welcome to NicheLoader's Code of Conduct! This document outlines the basic rules for interacting with this repository.
 
-## Rules 
-- **Be respectful** when interacting in issues or us in general.
-  - This includes any comments that may be harmful to a specific individual or group of people.
-  - This includes different opinions.
-- **Give good criticsm!** Most issues and pull-requests will be noticed, if some are actually required we will do something about it.
-- **No piracy**.
-- **No trolling or spam**.
+## Rules
+- **Be respectful** in issues, pull requests and discussions.
+  - No insults, hate speech or harassment towards any individual or group.
+  - Different opinions are fine, personal attacks are not.
+- **Write useful bug reports!** Include your app version, iOS version and steps to reproduce.
+- **No piracy.** Do not share or request paid apps, decrypted IPAs or certificates here.
+- **No trolling or spam.**
 
-Multiple violations of these rules could end up you being restricted from the repository.
+Breaking these rules repeatedly will get you blocked from the repository.

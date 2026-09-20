@@ -36,7 +36,7 @@ struct SourcesView: View {
 						SourceAppsView(object: Array(_sources), viewModel: viewModel)
 					} label: {
 						HStack(spacing: 9) {
-							Image("Repositories").appIconStyle()
+							Image(uiImage: (UIImage(named: Bundle.main.iconFileName ?? ""))!).appIconStyle()
 							NBTitleWithSubtitleView(
 								title: .localized("All Repositories"),
 								subtitle: .localized("See all apps from your sources")
