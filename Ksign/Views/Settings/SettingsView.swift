@@ -11,7 +11,7 @@ import NimbleViews
 // MARK: - View
 struct SettingsView: View {
 	private let _donationsUrl = "https://github.com/sponsors/nyasami"
-	private let _githubUrl = "https://github.com/noname7821/NicheLoaderApp"
+	private let _githubUrl = "https://github.com/noname7821/NicheLoaderr"
 	// MARK: Body
     var body: some View {
 		NBNavigationView(.localized("Settings")) {
